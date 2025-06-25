@@ -10,7 +10,7 @@ $storage | Get-VmsArchiveStorage
 
 # Add a new storage configuration
 $splat = @{
-     Name = 'Storage Example'
+     Name = "Storage Example $(Get-Random -Minimum 1 -Maximum 9999)"
      Path = 'C:\MediaDatabase'
      Retention = New-TimeSpan -Days 7
      MaximumSizeMB = 100GB / 1MB

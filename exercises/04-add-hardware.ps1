@@ -4,33 +4,39 @@ $recorder = Get-VmsRecordingServer | Select-Object -First 1
 # For more flexibility, you could prompt the user to pick one too
 $recorder = Get-VmsRecordingServer | Out-GridView -OutputMode Single
 $credential = Get-Credential -Message "Enter anything"
-$recorder | Add-VmsHardware -HardwareAddress http://127.0.0.1:5555 -Name 'Test Camera' -DriverNumber 5000 -Credential $credential
+$randomPort = Get-Random -Minimum 1000 -Maximum 65000
+$recorder | Add-VmsHardware -HardwareAddress "http://127.0.0.1:$randomPort/" -Name 'Test Camera' -DriverNumber 5000 -Credential $credential
+
+# Let's remove that hardware...
+
+Get-VmsHardware | Where-Object Address -eq "http://127.0.0.1:$randomPort/" | Remove-VmsHardware -Confirm:$false
 
 # That line was a little long. Let's introduce "splatting"...
 
 $myParams = @{
     RecordingServer = $recorder
-    HardwareAddress = 'http://127.0.0.1:5556'
+    HardwareAddress = "http://127.0.0.1:$randomPort/"
     Name            = 'Test Camera 2'
     DriverNumber    = 5000
     Credential      = $credential
 }
 Add-VmsHardware @myParams
 
+Get-VmsHardware | Where-Object Address -eq "http://127.0.0.1:$randomPort/" | Remove-VmsHardware -Confirm:$false
+
 # But we don't really want to have to type out all the Add-VmsHardware commands
 # so let's run a script instead...
 
-# First, let's get rid of the stablefps cameras we already added...
-Get-VmsHardware | Where-Object Model -match 'StableFPS' | Remove-VmsHardware
-
-# Now, let's add and configure two new StableFPS cameras with H.264 (default)
-.\scripts\Add-StableFPSHardware.ps1 -Count 2
+# Let's add and configure two new StableFPS cameras with H.264 (default)
+$hardware = .\scripts\Add-StableFPSHardware.ps1 -Count 2 -StartingPort $randomPort
+$hardware
 
 # And two more with H.265
-.\scripts\Add-StableFPSHardware.ps1 -Count 2 -StartingPort 10001 -CameraGroup /StableFPS/H265 -Settings @{
+$hardware += .\scripts\Add-StableFPSHardware.ps1 -Count 2 -StartingPort ($randomPort + 2) -CameraGroup /StableFPS/H265 -Settings @{
     VideoCodec = 'H265'
     FPS        = 30
 }
+$hardware
 
 # Let's export all the StableFPS hardware
 $hardware = Get-VmsHardware | Where-Object Model -match 'StableFPS'
@@ -38,12 +44,13 @@ $hardware | Export-VmsHardware -Path hardware.csv
 $hardware | Export-VmsHardware -Path hardware.xlsx
 
 # And now let's remove and re-import that hardware from the CSV file
-Get-VmsHardware | Where-Object Model -match 'StableFPS' | Remove-VmsHardware -Confirm:$false
-Import-VmsHardware hardware.csv
+$hardware | Remove-VmsHardware -Confirm:$false
+$devices = Import-VmsHardware hardware.csv
+$devices
 
 # CSV export/import can't capture detailed configuration like general settings
 # but the Excel format can!
-Get-VmsHardware | Where-Object Model -match 'StableFPS' | Remove-VmsHardware -Confirm:$false
+$devices | Get-VmsCamera | Get-VmsParentItem | Remove-VmsHardware -Confirm:$false
 Import-VmsHardware hardware.xlsx
 
 

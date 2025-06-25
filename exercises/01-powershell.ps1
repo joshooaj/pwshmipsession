@@ -1,3 +1,4 @@
+
 #region Basic syntax
 
 ## Commands (aka cmdlets) are almost always written as "Verb dash Noun"
@@ -26,6 +27,7 @@ $number.GetType()
 [AppDomain]::CurrentDomain.GetAssemblies()
 
 #endregion
+
 
 #region The three most-important commands
 
@@ -68,11 +70,12 @@ $process.Threads | Format-Table
 #endregion
 
 
-
-# Tab and List completion
+#region Tab and List completion
 
 ## Press TAB or CTRL+SPACE after a partial command name
 Get-Pro
 
 ## Or after the - when writing parameter names
 Get-Process -
+
+#endregion
