@@ -1,3 +1,5 @@
+# There's no test, but I encourage you to follow along anyway!
+
 # Login to your management server
 
 $credential = [pscredential]::new('xprotect', (ConvertTo-SecureString 'Ujt96bYqph9a' -AsPlainText -Force))

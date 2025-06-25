@@ -1,4 +1,6 @@
 {
     "powershell.powerShellDefaultVersion": "Windows PowerShell (x64)",
+    "powershell.integratedConsole.suppressStartupBanner": true,
+    "powershell.integratedConsole.showOnStartup": false,
     "terminal.integrated.defaultProfile.windows": "Windows PowerShell"
 }

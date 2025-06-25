@@ -1,3 +1,14 @@
+# MilestonePSTools includes a VERY detailed "camera report" command with ~80 properties
+
+Get-VmsCameraReport | Out-GridView
+
+# There are optional properties like retention info and percentage of time video has been recorded
+Get-VmsCameraReport -IncludeRetentionInfo -IncludeRecordingStats | Out-GridView
+
+# The camera report can take a long time to run, so if you only need very specific information you
+# can get that directly using different commands in the module, or even the MIP SDK classes directly.
+
+
 # Get-ItemState calls ProvideCurrentStateRequest for you using MessageCommunicationManager
 # https://doc.developer.milestonesys.com/html/index.html?base=miphelp/class_video_o_s_1_1_platform_1_1_messaging_1_1_message_communication.html
 
