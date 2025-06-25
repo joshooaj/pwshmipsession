@@ -1,3 +1,5 @@
+# This isn't intended to be a PowerShell language course but if it's you're first time using
+# PowerShell, here are a few things to help you get started.
 
 #region Basic syntax
 
@@ -25,6 +27,13 @@ $number.GetType()
 
 [environment]::OSVersion
 [AppDomain]::CurrentDomain.GetAssemblies()
+
+## You can add your own "usings" to simplify code
+using namespace System.Collections.Generic
+$list = [list[string]]::new()
+$list.Add('Hello')
+$list.Add('Devs!')
+$list
 
 #endregion
 
